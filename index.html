@@ -273,7 +273,7 @@
     </script>
     <script>
         // Initialize Stripe
-        const stripe = Stripe('pk_test_YOUR_PUBLISHABLE_KEY_HERE'); // Replace with your actual publishable key
+        const stripe = Stripe('pk_test_51Rc4UdPXixrm7mDkbi2WPS5FipSc0eLKIkSBfZi3I5KsX1J04OiwUayfwl0E7H7yISynqOS3YaKlTlWMdfDcjeHE00ZZIrTFma'); // Replace with your actual publishable key
         const elements = stripe.elements();
 
         // Bread prices and names
@@ -381,8 +381,8 @@
         // Initialize Express Payment Methods
         function initializeExpressPayment() {
             paymentRequest = stripe.paymentRequest({
-                country: 'US',
-                currency: 'usd',
+                country: 'BG',
+                currency: 'bgn',
                 total: {
                     label: 'Fresh Daily Bread Order',
                     amount: 0,
