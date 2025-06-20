@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ХЛЕБЧЕТО - Поръчай днес, вземи утре сутрин</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bread-brown': '#8B4513',
+                        'wheat-gold': '#DAA520',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-amber-50">
+    <!-- Landing Section -->
+    <section id="hero" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-100 to-orange-200">
+        <div class="container mx-auto px-6 text-center">
+            <div class="max-w-4xl mx-auto">
+                <!-- Bread Icon -->
+                <div class="mb-8">
+                    <svg class="w-24 h-24 mx-auto text-bread-brown" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
+                
+                <h1 class="text-5xl md:text-7xl font-bold text-bread-brown mb-6">
+                    ХЛЕБЧЕТО
+                </h1>
+                
+                <p class="text-xl md:text-2xl text-gray-700 mb-8 leading-relaxed">
+                    Започни деня си с прекрасната миризма на топъл, домашен хляб и чаша кафе. 
+                    <span class="text-wheat-gold font-semibold">Поръчай днес, наслади се утре сутрин.</span>
+                </p>
+                
+                <div class="mb-12">
+                    <div class="flex flex-wrap justify-center gap-6 text-gray-600 mb-8">
+                        <div class="flex items-center">
+                            <svg class="w-6 h-6 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Само натурални съставки</span>
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-6 h-6 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Прясно Изпечен</span>
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-6 h-6 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Локална пекарна</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CTA Button -->
+                <button 
+                    onclick="scrollToOrder()" 
+                    class="bg-bread-brown hover:bg-amber-800 text-white font-bold py-4 px-8 rounded-full text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                >
+                    Поръчай Хлебче за Утре
+                </button>
+                
+                <!-- Scroll indicator -->
+                <div class="mt-16 animate-bounce">
+                    <svg class="w-8 h-8 mx-auto text-bread-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Section -->
+    <section id="order" class="min-h-screen py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl font-bold text-center text-bread-brown mb-4">Поръчай ароматно хлебче</h2>
+                <p class="text-center text-gray-600 mb-12">Избери своя хляб и ще го изпечем за теб утре, рано сутрин!</p>
+                
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- Left Column - Order Details -->
+                    <div class="bg-amber-50 p-8 rounded-2xl shadow-lg">
+                        <div class="mb-8">
+                            <h3 class="text-2xl font-semibold text-bread-brown mb-6">Избери хлебче</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-4 border-2 border-amber-200 rounded-lg hover:border-wheat-gold transition-colors">
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-bread-brown">Хлебче с Квас</div>
+                                        <div class="text-sm text-gray-600">Направо е на конци - 5.00лв</div>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <button type="button" onclick="updateCounter('KvasHlebche', -1)" class="w-8 h-8 bg-bread-brown hover:bg-amber-800 text-white rounded-full flex items-center justify-center transition-colors">
+                                            <span class="text-lg font-bold">-</span>
+                                        </button>
+                                        <span id="KvasHlebche-count" class="text-xl font-semibold text-bread-brown min-w-[2rem] text-center">0</span>
+                                        <button type="button" onclick="updateCounter('KvasHlebche', 1)" class="w-8 h-8 bg-bread-brown hover:bg-amber-800 text-white rounded-full flex items-center justify-center transition-colors">
+                                            <span class="text-lg font-bold">+</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between p-4 border-2 border-amber-200 rounded-lg hover:border-wheat-gold transition-colors">
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-bread-brown">Бяло Хлебче</div>
+                                        <div class="text-sm text-gray-600">Класика в жанра - 4.00лв</div>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <button type="button" onclick="updateCounter('ByaloHlebche', -1)" class="w-8 h-8 bg-bread-brown hover:bg-amber-800 text-white rounded-full flex items-center justify-center transition-colors">
+                                            <span class="text-lg font-bold">-</span>
+                                        </button>
+                                        <span id="ByaloHlebche-count" class="text-xl font-semibold text-bread-brown min-w-[2rem] text-center">0</span>
+                                        <button type="button" onclick="updateCounter('ByaloHlebche', 1)" class="w-8 h-8 bg-bread-brown hover:bg-amber-800 text-white rounded-full flex items-center justify-center transition-colors">
+                                            <span class="text-lg font-bold">+</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between p-4 border-2 border-amber-200 rounded-lg hover:border-wheat-gold transition-colors">
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-bread-brown">Ръжено Хлебче</div>
+                                        <div class="text-sm text-gray-600">Богат аромат и вкус - 6.00лв</div>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <button type="button" onclick="updateCounter('RujenoHlebche', -1)" class="w-8 h-8 bg-bread-brown hover:bg-amber-800 text-white rounded-full flex items-center justify-center transition-colors">
+                                            <span class="text-lg font-bold">-</span>
+                                        </button>
+                                        <span id="RujenoHlebche-count" class="text-xl font-semibold text-bread-brown min-w-[2rem] text-center">0</span>
+                                        <button type="button" onclick="updateCounter('RujenoHlebche', 1)" class="w-8 h-8 bg-bread-brown hover:bg-amber-800 text-white rounded-full flex items-center justify-center transition-colors">
+                                            <span class="text-lg font-bold">+</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between p-4 border-2 border-amber-200 rounded-lg hover:border-wheat-gold transition-colors">
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-bread-brown">Пълнозърнесто Хлебче</div>
+                                        <div class="text-sm text-gray-600">С мноооого семена - 5.50лв</div>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <button type="button" onclick="updateCounter('PulnozurnestoHlebche', -1)" class="w-8 h-8 bg-bread-brown hover:bg-amber-800 text-white rounded-full flex items-center justify-center transition-colors">
+                                            <span class="text-lg font-bold">-</span>
+                                        </button>
+                                        <span id="PulnozurnestoHlebche-count" class="text-xl font-semibold text-bread-brown min-w-[2rem] text-center">0</span>
+                                        <button type="button" onclick="updateCounter('PulnozurnestoHlebche', 1)" class="w-8 h-8 bg-bread-brown hover:bg-amber-800 text-white rounded-full flex items-center justify-center transition-colors">
+                                            <span class="text-lg font-bold">+</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="order-summary" class="mt-6 p-4 bg-white rounded-lg border border-amber-300 hidden">
+                                <h4 class="font-semibold text-bread-brown mb-2">Order Summary:</h4>
+                                <div id="summary-items" class="space-y-1 text-sm text-gray-700"></div>
+                                <div class="border-t border-amber-200 mt-2 pt-2">
+                                    <div class="flex justify-between font-semibold text-bread-brown">
+                                        <span>Total:</span>
+                                        <span id="total-price">0.00лв</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h3 class="text-xl font-semibold text-bread-brown mb-4">Твоите данни</h3>
+                            <div class="grid md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-bread-brown font-semibold mb-2">Име</label>
+                                    <input type="text" id="customer-name" class="w-full p-3 border border-amber-300 rounded-lg focus:outline-none focus:border-wheat-gold" required>
+                                </div>
+                                <div>
+                                    <label class="block text-bread-brown font-semibold mb-2">Телефон</label>
+                                    <input type="tel" id="customer-phone" class="w-full p-3 border border-amber-300 rounded-lg focus:outline-none focus:border-wheat-gold" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="block text-bread-brown font-semibold mb-2">Email</label>
+                                <input type="email" id="customer-email" class="w-full p-3 border border-amber-300 rounded-lg focus:outline-none focus:border-wheat-gold" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="block text-bread-brown font-semibold mb-2">Кога ще си вземеш поръчката?</label>
+                                <select id="pickup-time" class="w-full p-3 border border-amber-300 rounded-lg focus:outline-none focus:border-wheat-gold">
+                                    <option value="7am">7:00 сутринта</option>
+                                    <option value="8am">8:00 сутринта</option>
+                                    <option value="9am">9:00 сутринта</option>
+                                    <option value="10am">10:00 сутринта</option>
+                                    <option value="11am">11:00 сутринта</option>
+                                    <option value="12pm">12:00 по обед</option>
+                                    <option value="1pm">13:00 по обед</option>
+                                    <option value="2pm">14:00 по обед</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-bread-brown font-semibold mb-2">Някакви специални инструкции?</label>
+                                <textarea id="special-instructions" class="w-full p-3 border border-amber-300 rounded-lg focus:outline-none focus:border-wheat-gold" rows="3" placeholder="Някакви други подробности, алергии за които трябва да знаем...?"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column - Payment -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg border border-amber-200">
+                        <h3 class="text-2xl font-semibold text-bread-brown mb-6">Плащане</h3>
+                        
+                        <div id="express-payment-section" class="mb-6 hidden">
+                            <div class="text-center mb-4">
+                                <span class="text-gray-500 text-sm">Плати бързо:</span>
+                            </div>
+                            <div id="payment-request-button" class="mb-4"></div>
+                            <div class="relative mb-4">
+                                <div class="absolute inset-0 flex items-center">
+                                    <div class="w-full border-t border-gray-300"></div>
+                                </div>
+                                <div class="relative flex justify-center text-sm">
+                                    <span class="px-2 bg-white text-gray-500">Или пък с карта</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form id="payment-form">
+                            <div class="mb-6">
+                                <label class="block text-bread-brown font-semibold mb-2">Картова информация</label>
+                                <div id="card-element" class="p-4 border border-amber-300 rounded-lg bg-amber-50"></div>
+                                <div id="card-errors" role="alert" class="text-red-600 text-sm mt-2"></div>
+                            </div>
+                            
+                            <div class="mb-6 p-4 bg-amber-50 rounded-lg">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-bread-brown font-semibold">Всичко:</span>
+                                    <span id="payment-total" class="text-2xl font-bold text-bread-brown">0.00</span>
+                                </div>
+                                <p class="text-sm text-gray-600">Плащането е мигновено. Хлебчето ти ще е готово за вземане утре в уговорения час!</p>
+                            </div>
+                            
+                            <button type="submit" id="submit-payment" class="w-full bg-gray-400 text-white font-bold py-4 px-6 rounded-lg text-xl cursor-not-allowed mb-4" disabled>
+                                <span id="button-text">Избери си хлебче за да продължиш</span>
+                                <div id="spinner" class="hidden inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin ml-2"></div>
+                            </button>
+                            
+                            <div class="text-center">
+                                <div class="flex items-center justify-center space-x-2 text-gray-500 text-sm">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span>Secured by Stripe</span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function scrollToOrder() {
+            document.getElementById('order').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+    </script>
+    <script>
+        // Initialize Stripe
+        const stripe = Stripe('pk_test_YOUR_PUBLISHABLE_KEY_HERE'); // Replace with your actual publishable key
+        const elements = stripe.elements();
+
+        // Bread prices and names
+        const breadPrices = {
+            'KvasHlebche': 6.50,
+            'ByaloHlebche': 5.50,
+            'RujenoHlebche': 6.00,
+            'PulnozurnestoHlebche': 6.50
+        };
+
+        const breadNames = {
+            'KvasHlebche': 'Хлебче с Квас',
+            'ByaloHlebche': 'Бяло Хлебче',
+            'RujenoHlebche': 'Ръжено Хлебче',
+            'PulnozurnestoHlebche': 'Пълнозърнество Хлебче'
+        };
+
+        // Counter state
+        let breadCounts = {
+            'KvasHlebche': 0,
+            'ByaloHlebche': 0,
+            'RujenoHlebche': 0,
+            'PulnozurnestoHlebche': 0
+        };
+
+        // Payment variables
+        let paymentRequest;
+        let prButton;
+        let cardElement;
+        let currentTotal = 0;
+
+        // Update counter function
+        function updateCounter(breadType, change) {
+            const newCount = Math.max(0, breadCounts[breadType] + change);
+            breadCounts[breadType] = newCount;
+            
+            document.getElementById(breadType + '-count').textContent = newCount;
+            updateOrderSummary();
+        }
+
+        // Update order summary
+        function updateOrderSummary() {
+            const summaryDiv = document.getElementById('order-summary');
+            const summaryItems = document.getElementById('summary-items');
+            const totalPrice = document.getElementById('total-price');
+            
+            let total = 0;
+            let hasItems = false;
+            let summaryHTML = '';
+            
+            for (const [breadType, count] of Object.entries(breadCounts)) {
+                if (count > 0) {
+                    hasItems = true;
+                    const itemTotal = count * breadPrices[breadType];
+                    total += itemTotal;
+                    summaryHTML += `<div class="flex justify-between">
+                        <span>${count}x ${breadNames[breadType]}</span>
+                        <span>${itemTotal.toFixed(2)}лв</span>
+                    </div>`;
+                }
+            }
+            
+            if (hasItems) {
+                summaryDiv.classList.remove('hidden');
+                summaryItems.innerHTML = summaryHTML;
+                totalPrice.textContent = `${total.toFixed(2)}лв`;
+            } else {
+                summaryDiv.classList.add('hidden');
+            }
+            
+            // Update payment total
+            updatePaymentTotal(total);
+        }
+
+        // Initialize payment elements
+        function initializePayment() {
+            // Create card element
+            cardElement = elements.create('card', {
+                style: {
+                    base: {
+                        fontSize: '16px',
+                        color: '#424770',
+                        '::placeholder': {
+                            color: '#aab7c4',
+                        },
+                    },
+                },
+            });
+            cardElement.mount('#card-element');
+
+            // Handle card element errors
+            cardElement.on('change', ({error}) => {
+                const displayError = document.getElementById('card-errors');
+                if (error) {
+                    displayError.textContent = error.message;
+                } else {
+                    displayError.textContent = '';
+                }
+            });
+
+            // Initialize Payment Request (Apple Pay, Google Pay)
+            initializeExpressPayment();
+        }
+
+        // Initialize Express Payment Methods
+        function initializeExpressPayment() {
+            paymentRequest = stripe.paymentRequest({
+                country: 'US',
+                currency: 'usd',
+                total: {
+                    label: 'Fresh Daily Bread Order',
+                    amount: 0,
+                },
+                requestPayerName: true,
+                requestPayerEmail: true,
+                requestPayerPhone: true,
+            });
+
+            prButton = elements.create('paymentRequestButton', {
+                paymentRequest: paymentRequest,
+                style: {
+                    paymentRequestButton: {
+                        theme: 'light',
+                        height: '50px',
+                        type: 'buy',
+                    },
+                },
+            });
+
+            // Check if Payment Request is available
+            paymentRequest.canMakePayment().then((result) => {
+                if (result) {
+                    prButton.mount('#payment-request-button');
+                    document.getElementById('express-payment-section').classList.remove('hidden');
+                }
+            });
+
+            // Handle express payment
+            paymentRequest.on('paymentmethod', async (ev) => {
+                // Get customer data from the express payment
+                const customerData = {
+                    name: ev.payerName,
+                    email: ev.payerEmail,
+                    phone: ev.payerPhone,
+                };
+
+                // Process the payment
+                const {error, paymentIntent} = await processPayment(ev.paymentMethod, customerData);
+                
+                if (error) {
+                    ev.complete('fail');
+                    showError(error.message);
+                } else {
+                    ev.complete('success');
+                    handleSuccessfulPayment(paymentIntent, customerData);
+                }
+            });
+        }
+
+        // Update payment total
+        function updatePaymentTotal(total) {
+            currentTotal = Math.round(total * 100); // Convert to cents
+            document.getElementById('payment-total').textContent = `${total.toFixed(2)}лв`;
+            
+            // Update payment request total
+            if (paymentRequest) {
+                paymentRequest.update({
+                    total: {
+                        label: 'Fresh Daily Bread Order',
+                        amount: currentTotal,
+                    },
+                });
+            }
+            
+            // Enable/disable payment button
+            const submitButton = document.getElementById('submit-payment');
+            const buttonText = document.getElementById('button-text');
+            
+            if (total > 0) {
+                submitButton.disabled = false;
+                submitButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                submitButton.classList.add('bg-bread-brown', 'hover:bg-amber-800', 'transition-colors');
+                buttonText.textContent = `Поръчай ${total.toFixed(2)}лв`;
+            } else {
+                submitButton.disabled = true;
+                submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+                submitButton.classList.remove('bg-bread-brown', 'hover:bg-amber-800', 'transition-colors');
+                buttonText.textContent = 'Select bread to continue';
+            }
+        }
+
+        // Handle form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePayment();
+            
+            document.getElementById('payment-form').addEventListener('submit', async (event) => {
+                event.preventDefault();
+                
+                if (currentTotal === 0) {
+                    showError('Please select bread items before placing your order.');
+                    return;
+                }
+                
+                // Validate customer information
+                const customerData = getCustomerData();
+                if (!validateCustomerData(customerData)) {
+                    return;
+                }
+                
+                setLoading(true);
+                
+                // Create payment method
+                const {error, paymentMethod} = await stripe.createPaymentMethod({
+                    type: 'card',
+                    card: cardElement,
+                    billing_details: {
+                        name: customerData.name,
+                        email: customerData.email,
+                        phone: customerData.phone,
+                    },
+                });
+                
+                if (error) {
+                    setLoading(false);
+                    showError(error.message);
+                    return;
+                }
+                
+                // Process payment
+                const {error: paymentError, paymentIntent} = await processPayment(paymentMethod, customerData);
+                
+                setLoading(false);
+                
+                if (paymentError) {
+                    showError(paymentError.message);
+                } else {
+                    handleSuccessfulPayment(paymentIntent, customerData);
+                }
+            });
+        });
+
+        // Process payment with your backend
+        async function processPayment(paymentMethod, customerData) {
+            try {
+                // This would typically call your backend API
+                // For demo purposes, we'll simulate a successful payment
+                
+                const response = await fetch('/create-payment-intent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        amount: currentTotal,
+                        payment_method: paymentMethod.id,
+                        customer: customerData,
+                        order_details: getOrderDetails(),
+                    }),
+                });
+                
+                const {client_secret, error} = await response.json();
+                
+                if (error) {
+                    return {error: {message: error}};
+                }
+                
+                // Confirm payment
+                const result = await stripe.confirmCardPayment(client_secret);
+                return result;
+                
+            } catch (error) {
+                // For demo purposes, simulate a successful payment
+                console.log('Demo mode: Payment would be processed here');
+                return {
+                    paymentIntent: {
+                        id: 'pi_demo_' + Math.random().toString(36).substr(2, 9),
+                        status: 'succeeded'
+                    }
+                };
+            }
+        }
+
+        // Get customer data from form
+        function getCustomerData() {
+            return {
+                name: document.getElementById('customer-name').value,
+                email: document.getElementById('customer-email').value,
+                phone: document.getElementById('customer-phone').value,
+                pickup_time: document.getElementById('pickup-time').value,
+                special_instructions: document.getElementById('special-instructions').value,
+            };
+        }
+
+        // Validate customer data
+        function validateCustomerData(data) {
+            if (!data.name || !data.email || !data.phone) {
+                showError('Please fill in all required customer information.');
+                return false;
+            }
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(data.email)) {
+                showError('Please enter a valid email address.');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Get order details
+        function getOrderDetails() {
+            const order = [];
+            for (const [breadType, count] of Object.entries(breadCounts)) {
+                if (count > 0) {
+                    order.push({
+                        type: breadType,
+                        name: breadNames[breadType],
+                        quantity: count,
+                        price: breadPrices[breadType],
+                        total: count * breadPrices[breadType]
+                    });
+                }
+            }
+            return order;
+        }
+
+        // Handle successful payment
+        function handleSuccessfulPayment(paymentIntent, customerData) {
+            // Hide the payment form
+            document.getElementById('payment-form').style.display = 'none';
+            
+            // Show success message
+            const paymentSection = document.querySelector('.bg-white.p-8.rounded-2xl.shadow-lg.border.border-amber-200');
+            paymentSection.innerHTML = `
+                <div class="text-center">
+                    <div class="mb-6">
+                        <svg class="w-16 h-16 mx-auto text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-green-600 mb-4">Payment Successful!</h3>
+                    <p class="text-gray-600 mb-4">Your order has been confirmed and payment processed.</p>
+                    <div class="bg-amber-50 p-4 rounded-lg mb-4">
+                        <p class="text-sm text-gray-700"><strong>Order ID:</strong> ${paymentIntent.id}</p>
+                        <p class="text-sm text-gray-700"><strong>Pickup Time:</strong> ${customerData.pickup_time} tomorrow</p>
+                    </div>
+                    <p class="text-sm text-gray-600">We'll send you a confirmation email and call you with pickup details.</p>
+                </div>
+            `;
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('card-errors');
+            errorDiv.textContent = message;
+            
+            // Auto-hide error after 5 seconds
+            setTimeout(() => {
+                errorDiv.textContent = '';
+            }, 5000);
+        }
+
+        // Set loading state
+        function setLoading(isLoading) {
+            const button = document.getElementById('submit-payment');
+            const buttonText = document.getElementById('button-text');
+            const spinner = document.getElementById('spinner');
+            
+            if (isLoading) {
+                button.disabled = true;
+                buttonText.textContent = 'Processing...';
+                spinner.classList.remove('hidden');
+            } else {
+                button.disabled = false;
+                buttonText.textContent = `Поръчай ${(currentTotal / 100).toFixed(2)}лв`;
+                spinner.classList.add('hidden');
+            }
+        }
+
+        // Scroll to order function
+        function scrollToOrder() {
+            document.getElementById('order').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+        </script>
+</body>
+</html>
